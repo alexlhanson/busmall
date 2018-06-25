@@ -23,7 +23,40 @@ function Product(name, src){
 };
 
 /********************************************************************************
-*         Add instances and call functions for running                          *
+*         Product helper functions                                              *
+********************************************************************************/
+
+Product.renderThreeImages = function(){
+  
+  //find first random number and add to page
+  var randomNumber1 = Product.randomNumber();
+
+  do {
+    var randomNumber2 = Product.randomNumber();
+  } while (randomNumber2 === randomNumber1);
+  
+  do{
+    var randomNumber3 = Product.randomNumber();
+  } while (randomNumber3 === randomNumber2 || randomNumber3 === randomNumber1);
+  
+  product1.src = Product.productArray[randomNumber1].src;
+  product2.src = Product.productArray[randomNumber2].src;
+  product3.src = Product.productArray[randomNumber3].src;
+};
+
+//Create random number by Product array range
+Product.randomNumber = function(){
+  var randomNumber = Math.floor(Math.random() * this.productArray.length);
+  return randomNumber;
+};
+
+/********************************************************************************
+*         Event Listeners and Handlers                                          *
+********************************************************************************/
+
+
+/********************************************************************************
+ *         Add instances and call functions for running                          *
 ********************************************************************************/
 //Add Product instances
 new Product('bag', './images/products/bag.jpg');
@@ -40,11 +73,12 @@ new Product('pen', './images/products/pen.jpg');
 new Product('pet-sweep', './images/products/pet-sweep.jpg');
 new Product('scissors', './images/products/scissors.jpg');
 new Product('shark', './images/products/shark.jpg');
-new Product('sweep', './images/products/sweep.jpg');
+new Product('sweep', './images/products/sweep.png');
 new Product('tauntaun', './images/products/tauntaun.jpg');
 new Product('unicorn', './images/products/unicorn.jpg');
 new Product('usb', './images/products/usb.gif');
 new Product('water-can', './images/products/water-can.jpg');
 new Product('wine-glass', './images/products/wine-glass.jpg');
 
+Product.renderThreeImages();
 
