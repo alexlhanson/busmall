@@ -3,7 +3,9 @@
 /********************************************************************************
 *         Global variables                                                      *
 ********************************************************************************/
-
+var product1 = document.getElementById('product1');
+var product2 = document.getElementById('product2');
+var product3 = document.getElementById('product3');
 
 /********************************************************************************
 *         Product Constructor                                                   *
