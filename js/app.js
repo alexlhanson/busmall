@@ -17,6 +17,12 @@ var prodName3 = document.getElementById('prodName3');
 var productForm = document.getElementById('productSelector');
 var productVoteResults = document.getElementById('productVoteResults');
 
+//Arrays for charting
+var chartProductArray = [];
+// var chartLikesArray = [];
+// var chartDisplaysArray = [];
+var chartPercentagesArray = [];
+
 
 /********************************************************************************
 *         Product Constructor                                                   *
@@ -34,6 +40,7 @@ function Product(name, src){
 
   this.likesCount = 0;
   this.displayCount = 0;
+  this.percentageLikes = 0;
 
   Product.productArray.push(this);
 };
@@ -53,22 +60,19 @@ Product.chooseThreeImages = function(){
   //find first random number
   do {
     Product.indexNumber1 = Product.randomNumber();
-    console.log(Product.lastRoundArray.includes(Product.indexNumber1));
   } while (Product.lastRoundArray.includes(Product.indexNumber1));
 
   //find second random number
   do {
     Product.indexNumber2 = Product.randomNumber();
-    console.log(Product.lastRoundArray.includes(Product.indexNumber2));
   } while (Product.indexNumber2 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber2));
-  
+
   //find third random number
   do{
     Product.indexNumber3 = Product.randomNumber();
-    console.log(Product.lastRoundArray.includes(Product.indexNumber1));
   } while (Product.indexNumber3 === Product.indexNumber2 || Product.indexNumber3 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber3));
-  
-  Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber3, Product.indexNumber3];
+
+  Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber2, Product.indexNumber3];
 };
 
 //function in constructer to change image source of images on the site and adds displayCount
@@ -87,6 +91,13 @@ Product.renderProducts = function(){
   Product.productArray[Product.indexNumber1].displayCount++;
   Product.productArray[Product.indexNumber2].displayCount++;
   Product.productArray[Product.indexNumber3].displayCount++;
+};
+
+//Function in constructer to calculate percentage clicked
+Product.calcPercent = function (){
+  for (var product in Product.productArray){
+    Product.productArray[product].percentageLikes = parseFloat(100 * (Product.productArray[product].likesCount / Product.productArray[product].displayCount));
+  }
 };
 
 /********************************************************************************
@@ -108,14 +119,16 @@ function handleVoteSubmit(event) {
 
   if (Product.voteCount === 25){
     displayResults();
+    createChartArrays();
+    drawChart();
   } else {
     Product.renderProducts();
   }
 }
 
 /********************************************************************************
-*         Changing Displays                                                     *
-********************************************************************************/
+ *         Changing Displays                                                     *
+ ********************************************************************************/
 
 //Removes voting and displays results
 var displayResults = function() {
@@ -123,12 +136,14 @@ var displayResults = function() {
   productForm.style.display = 'none';
   productForm.removeEventListener(event, handleVoteSubmit);
 
+  Product.calcPercent();
+
   createHeaderRow();
 
   var trEl = document.createElement('tr');
   var thEl = document.createElement('th');
   var tdEl = document.createElement('td');
-  
+
   for (var i = 0; i < Product.productArray.length; i++){
     trEl = document.createElement('tr');
 
@@ -157,11 +172,11 @@ var createHeaderRow = function(){
   thEl.textContent = 'Product Name';
   trEl.appendChild(thEl);
 
-  thEl = document.createElement('th');  
+  thEl = document.createElement('th');
   thEl.textContent = 'Number of Likes';
   trEl.appendChild(thEl);
 
-  thEl = document.createElement('th');  
+  thEl = document.createElement('th');
   thEl.textContent = 'Times displayed';
   trEl.appendChild(thEl);
 
@@ -169,8 +184,41 @@ var createHeaderRow = function(){
 };
 
 /********************************************************************************
- *         Add instances and call functions for running                          *
+*         Charting                                                              *
 ********************************************************************************/
+var createChartArrays = function(){
+  for (var product in Product.productArray){
+    chartProductArray.push(Product.productArray[product].name);
+    chartPercentagesArray.push(Product.productArray[product].percentageLikes);
+    console.log(chartPercentagesArray);
+    //future potential charting
+    // chartLikesArray.push(Product.productArray[product].likesCount);
+    // chartDisplaysArray.push(Product.productArray[product].displayCount);
+  }
+};
+
+var data = {
+  datasets: [{
+    data: chartPercentagesArray
+  }],
+
+  labels: chartProductArray
+};
+
+function drawChart() {
+  var ctx = document.getElementById('productChart').getContext('2d');
+  var percentageChart = new Chart (ctx, {
+    type:'doughnut',
+    data: data,
+    // option: options
+  });
+};
+
+
+
+/********************************************************************************
+ *         Add instances and call functions for running                          *
+ ********************************************************************************/
 //Add Product instances
 new Product('bag', './images/products/bag.jpg');
 new Product('banana', './images/products/banana.jpg');
@@ -193,4 +241,5 @@ new Product('usb', './images/products/usb.gif');
 new Product('water-can', './images/products/water-can.jpg');
 new Product('wine-glass', './images/products/wine-glass.jpg');
 Product.renderProducts();
+
 
