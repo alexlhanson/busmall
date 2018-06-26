@@ -15,6 +15,7 @@ var prodName3 = document.getElementById('prodName3');
 
 //Element node variables for form and table
 var productForm = document.getElementById('productSelector');
+var productChart = document.getElementById('productChart');
 var productVoteResults = document.getElementById('productVoteResults');
 
 //Arrays for charting
@@ -22,7 +23,8 @@ var chartProductArray = [];
 // var chartLikesArray = [];
 // var chartDisplaysArray = [];
 var chartPercentagesArray = [];
-
+var chartDrawn = false;
+hideChart();
 
 /********************************************************************************
 *         Product Constructor                                                   *
@@ -134,6 +136,7 @@ function handleVoteSubmit(event) {
 var displayResults = function() {
   //removes form and disables listener
   productForm.style.display = 'none';
+  productChart.style.display = 'inline';
   productForm.removeEventListener(event, handleVoteSubmit);
 
   Product.calcPercent();
@@ -212,7 +215,12 @@ function drawChart() {
     data: data,
     // option: options
   });
+  drawChart = true;
 };
+
+function hideChart () {
+  productChart.hidden = true;
+}
 
 
 
