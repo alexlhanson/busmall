@@ -53,21 +53,18 @@ Product.chooseThreeImages = function(){
   //find first random number
   do {
     Product.indexNumber1 = Product.randomNumber();
-    console.log(Product.lastRoundArray.includes(Product.indexNumber1));
   } while (Product.lastRoundArray.includes(Product.indexNumber1));
 
   //find second random number
   do {
     Product.indexNumber2 = Product.randomNumber();
-    console.log(Product.lastRoundArray.includes(Product.indexNumber2));
   } while (Product.indexNumber2 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber2));
-  
+
   //find third random number
   do{
     Product.indexNumber3 = Product.randomNumber();
-    console.log(Product.lastRoundArray.includes(Product.indexNumber1));
   } while (Product.indexNumber3 === Product.indexNumber2 || Product.indexNumber3 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber3));
-  
+
   Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber3, Product.indexNumber3];
 };
 
@@ -87,6 +84,13 @@ Product.renderProducts = function(){
   Product.productArray[Product.indexNumber1].displayCount++;
   Product.productArray[Product.indexNumber2].displayCount++;
   Product.productArray[Product.indexNumber3].displayCount++;
+};
+
+//Function in constructer to calculate percentage clicked
+Product.calcPercent = function (){
+  for (var product in Product.productArray){
+    this.percentageLikes = Math.float(Product.productArray[product].likesCount / Product.productArray[product].displayCount);
+  }
 };
 
 /********************************************************************************
@@ -114,8 +118,8 @@ function handleVoteSubmit(event) {
 }
 
 /********************************************************************************
-*         Changing Displays                                                     *
-********************************************************************************/
+ *         Changing Displays                                                     *
+ ********************************************************************************/
 
 //Removes voting and displays results
 var displayResults = function() {
@@ -123,12 +127,14 @@ var displayResults = function() {
   productForm.style.display = 'none';
   productForm.removeEventListener(event, handleVoteSubmit);
 
+  Product.calcPercent();
+
   createHeaderRow();
 
   var trEl = document.createElement('tr');
   var thEl = document.createElement('th');
   var tdEl = document.createElement('td');
-  
+
   for (var i = 0; i < Product.productArray.length; i++){
     trEl = document.createElement('tr');
 
@@ -157,11 +163,11 @@ var createHeaderRow = function(){
   thEl.textContent = 'Product Name';
   trEl.appendChild(thEl);
 
-  thEl = document.createElement('th');  
+  thEl = document.createElement('th');
   thEl.textContent = 'Number of Likes';
   trEl.appendChild(thEl);
 
-  thEl = document.createElement('th');  
+  thEl = document.createElement('th');
   thEl.textContent = 'Times displayed';
   trEl.appendChild(thEl);
 
@@ -170,7 +176,7 @@ var createHeaderRow = function(){
 
 /********************************************************************************
  *         Add instances and call functions for running                          *
-********************************************************************************/
+ ********************************************************************************/
 //Add Product instances
 new Product('bag', './images/products/bag.jpg');
 new Product('banana', './images/products/banana.jpg');
