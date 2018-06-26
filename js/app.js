@@ -200,9 +200,14 @@ var createChartArrays = function(){
   }
 };
 
+var chartColors = [
+  '#FFCCCC', '#FFEECC', '#FFDDCC', '#FFCCCC', '#FFBBCC', '#FFAACC', '#CCFFFF', '#CCEEFF', '#CCDDFF', '#CCCCFF', '#CCBBFF', '#CCAAFF', '#BFFCC6', '#DBFFD6', '#F3FFE3', '#E7FFAC', '#FFFFD1', '#FFABA1', '#D5AAFF', '#AFF8D8'
+];
+
 var data = {
   datasets: [{
-    data: chartPercentagesArray
+    data: chartPercentagesArray,
+    backgroundColor: chartColors,
   }],
 
   labels: chartProductArray
@@ -213,9 +218,9 @@ function drawChart() {
   var percentageChart = new Chart (ctx, {
     type:'doughnut',
     data: data,
-    // option: options
   });
   drawChart = true;
+  productChart.hidden = false;
 };
 
 function hideChart () {
