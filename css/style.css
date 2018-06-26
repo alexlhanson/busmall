@@ -31,6 +31,7 @@ main {
   clear: both;
   margin: auto;
   text-align: center;
+  position: relative;
 }
 
 legend {

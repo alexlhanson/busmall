@@ -17,6 +17,12 @@ var prodName3 = document.getElementById('prodName3');
 var productForm = document.getElementById('productSelector');
 var productVoteResults = document.getElementById('productVoteResults');
 
+//Arrays for charting
+var chartProductArray = [];
+// var chartLikesArray = [];
+// var chartDisplaysArray = [];
+var chartPercentagesArray = [];
+
 
 /********************************************************************************
 *         Product Constructor                                                   *
@@ -34,6 +40,7 @@ function Product(name, src){
 
   this.likesCount = 0;
   this.displayCount = 0;
+  this.percentageLikes = 0;
 
   Product.productArray.push(this);
 };
@@ -65,7 +72,7 @@ Product.chooseThreeImages = function(){
     Product.indexNumber3 = Product.randomNumber();
   } while (Product.indexNumber3 === Product.indexNumber2 || Product.indexNumber3 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber3));
 
-  Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber3, Product.indexNumber3];
+  Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber2, Product.indexNumber3];
 };
 
 //function in constructer to change image source of images on the site and adds displayCount
@@ -89,7 +96,7 @@ Product.renderProducts = function(){
 //Function in constructer to calculate percentage clicked
 Product.calcPercent = function (){
   for (var product in Product.productArray){
-    this.percentageLikes = Math.float(Product.productArray[product].likesCount / Product.productArray[product].displayCount);
+    Product.productArray[product].percentageLikes = parseFloat(100 * (Product.productArray[product].likesCount / Product.productArray[product].displayCount));
   }
 };
 
@@ -112,6 +119,8 @@ function handleVoteSubmit(event) {
 
   if (Product.voteCount === 25){
     displayResults();
+    createChartArrays();
+    drawChart();
   } else {
     Product.renderProducts();
   }
@@ -175,6 +184,39 @@ var createHeaderRow = function(){
 };
 
 /********************************************************************************
+*         Charting                                                              *
+********************************************************************************/
+var createChartArrays = function(){
+  for (var product in Product.productArray){
+    chartProductArray.push(Product.productArray[product].name);
+    chartPercentagesArray.push(Product.productArray[product].percentageLikes);
+    console.log(chartPercentagesArray);
+    //future potential charting
+    // chartLikesArray.push(Product.productArray[product].likesCount);
+    // chartDisplaysArray.push(Product.productArray[product].displayCount);
+  }
+};
+
+var data = {
+  datasets: [{
+    data: chartPercentagesArray
+  }],
+
+  labels: chartProductArray
+};
+
+function drawChart() {
+  var ctx = document.getElementById('productChart').getContext('2d');
+  var percentageChart = new Chart (ctx, {
+    type:'doughnut',
+    data: data,
+    // option: options
+  });
+};
+
+
+
+/********************************************************************************
  *         Add instances and call functions for running                          *
  ********************************************************************************/
 //Add Product instances
@@ -199,4 +241,5 @@ new Product('usb', './images/products/usb.gif');
 new Product('water-can', './images/products/water-can.jpg');
 new Product('wine-glass', './images/products/wine-glass.jpg');
 Product.renderProducts();
+
 
