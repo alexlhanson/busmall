@@ -85,7 +85,7 @@ function handleVoteSubmit(event) {
   for (var i = 0 ; i < productForm.length; i++){
     if (productForm[i].checked) {
       var selectedIndex = Product.selectedIndexArray[productForm[i].dataset.index];
-      Product.productArray[selectedIndex].likes++;
+      Product.productArray[selectedIndex].likesCount++;
     }
   }
   Product.voteCount++;
@@ -97,11 +97,54 @@ function handleVoteSubmit(event) {
   }
 }
 
+//Removes voting and displays results
 var displayResults = function() {
+  //removes
   productForm.style.display = 'none';
 
-  var ulEl = document.createElement
-  productVoteResults.style.display = 
+  createHeaderRow();
+
+  var trEl = document.createElement('tr');
+  var thEl = document.createElement('th');
+  var tdEl = document.createElement('td');
+  
+  for (var i = 0; i < Product.productArray.length; i++){
+    trEl = document.createElement('tr');
+
+    thEl = document.createElement('th');
+    thEl.textContent = Product.productArray[i].name;
+    trEl.appendChild(thEl);
+
+    tdEl = document.createElement('td');
+    tdEl.textContent = Product.productArray[i].likesCount;
+    trEl.appendChild(tdEl);
+
+    tdEl = document.createElement('td');
+    tdEl.textContent = Product.productArray[i].displayCount;
+    trEl.appendChild(tdEl);
+
+    productVoteResults.appendChild(trEl);
+  }
+
+  productVoteResults.style.display = 'block';
+};
+
+var createHeaderRow = function(){
+  var trEl = document.createElement('tr');
+
+  var thEl = document.createElement('th');
+  thEl.textContent = 'Product Name';
+  trEl.appendChild(thEl);
+
+  thEl = document.createElement('th');  
+  thEl.textContent = 'Number of Likes';
+  trEl.appendChild(thEl);
+
+  thEl = document.createElement('th');  
+  thEl.textContent = 'Times displayed';
+  trEl.appendChild(thEl);
+
+  productVoteResults.appendChild(trEl);
 };
 
 /********************************************************************************
@@ -128,6 +171,5 @@ new Product('unicorn', './images/products/unicorn.jpg');
 new Product('usb', './images/products/usb.gif');
 new Product('water-can', './images/products/water-can.jpg');
 new Product('wine-glass', './images/products/wine-glass.jpg');
-
 Product.renderProducts();
 
