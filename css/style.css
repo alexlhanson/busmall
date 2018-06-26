@@ -9,6 +9,7 @@ header {
   background-color: #3F4234;
   color: white;
   height: 80px;
+  margin-bottom: 30px;
 }
 header section {
   float: left;
@@ -25,7 +26,25 @@ nav a {
   
 }
 
-img {
+main {
+  max-width: 960px;
+  clear: both;
+  margin: auto;
+  text-align: center;
+}
+
+legend {
+  margin-bottom: 30px;
+}
+
+form div {
+  float: left;
+  max-width: 300px;
+  margin: 0 10px 30px 0px;
+  text-align: center;
+}
+
+form img {
   max-width: 300px;
 }
 
@@ -35,15 +54,11 @@ footer {
   text-align: center;
 }
 
-main {
-  max-width: 960px;
-  clear: both;
-  margin: auto;
-}
 
 table {
   border: solid 3px black;
   margin: auto;
+  text-align: center;
 }
 
 th {
@@ -52,4 +67,8 @@ th {
 
 td {
   border: solid 1px black;
+}
+
+#voteButton{
+  background-color: #D1A827;
 }

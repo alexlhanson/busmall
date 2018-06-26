@@ -8,6 +8,11 @@ var product1 = document.getElementById('product1');
 var product2 = document.getElementById('product2');
 var product3 = document.getElementById('product3');
 
+//Element nodes for product names
+var prodName1 = document.getElementById('prodName1');
+var prodName2 = document.getElementById('prodName2');
+var prodName3 = document.getElementById('prodName3');
+
 //Element node variables for form and table
 var productForm = document.getElementById('productSelector');
 var productVoteResults = document.getElementById('productVoteResults');
@@ -75,6 +80,10 @@ Product.renderProducts = function(){
   product3.src = Product.productArray[Product.indexNumber3].src;
   Product.selectedIndexArray = [Product.indexNumber1, Product.indexNumber2, Product.indexNumber3];
 
+  prodName1.innerText = Product.productArray[Product.indexNumber1].name;
+  prodName2.innerText = Product.productArray[Product.indexNumber2].name;
+  prodName3.innerText = Product.productArray[Product.indexNumber3].name;
+
   Product.productArray[Product.indexNumber1].displayCount++;
   Product.productArray[Product.indexNumber2].displayCount++;
   Product.productArray[Product.indexNumber3].displayCount++;
@@ -110,8 +119,9 @@ function handleVoteSubmit(event) {
 
 //Removes voting and displays results
 var displayResults = function() {
-  //removes
+  //removes form and disables listener
   productForm.style.display = 'none';
+  productForm.removeEventListener(event, handleVoteSubmit);
 
   createHeaderRow();
 
@@ -137,7 +147,7 @@ var displayResults = function() {
     productVoteResults.appendChild(trEl);
   }
 
-  productVoteResults.style.display = 'block';
+  productVoteResults.style.display = 'inline';
 };
 
 var createHeaderRow = function(){
