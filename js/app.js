@@ -3,9 +3,12 @@
 /********************************************************************************
 *         Global variables                                                      *
 ********************************************************************************/
+//Element node variables for each image displayed
 var product1 = document.getElementById('product1');
 var product2 = document.getElementById('product2');
 var product3 = document.getElementById('product3');
+
+//Element node variables for form and table
 var productForm = document.getElementById('productSelector');
 var productVoteResults = document.getElementById('productVoteResults');
 
@@ -13,11 +16,13 @@ var productVoteResults = document.getElementById('productVoteResults');
 /********************************************************************************
 *         Product Constructor                                                   *
 ********************************************************************************/
+//Arrays for Constructor
 Product.productArray = [];
 Product.lastRoundArray = [];
 Product.selectedIndexArray = [];
 Product.voteCount = 0;
 
+//constructor for Product objects
 function Product(name, src){
   this.name = name;
   this.src = src;
@@ -38,6 +43,7 @@ Product.randomNumber = function(){
   return randomNumber;
 };
 
+//Chooses three random numbers for selecting images
 Product.chooseThreeImages = function(){
   //find first random number
   do {
@@ -60,6 +66,7 @@ Product.chooseThreeImages = function(){
   Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber3, Product.indexNumber3];
 };
 
+//function in constructer to change image source of images on the site and adds displayCount
 Product.renderProducts = function(){
   Product.chooseThreeImages();
 
@@ -96,6 +103,10 @@ function handleVoteSubmit(event) {
     Product.renderProducts();
   }
 }
+
+/********************************************************************************
+*         Changing Displays                                                     *
+********************************************************************************/
 
 //Removes voting and displays results
 var displayResults = function() {
@@ -165,7 +176,7 @@ new Product('pen', './images/products/pen.jpg');
 new Product('pet-sweep', './images/products/pet-sweep.jpg');
 new Product('scissors', './images/products/scissors.jpg');
 new Product('shark', './images/products/shark.jpg');
-new Product('sweep', './images/products/sweep.png');
+new Product('sweep', './images/products/sweep.jpg');
 new Product('tauntaun', './images/products/tauntaun.jpg');
 new Product('unicorn', './images/products/unicorn.jpg');
 new Product('usb', './images/products/usb.gif');
