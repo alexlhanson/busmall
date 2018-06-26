@@ -90,7 +90,7 @@ function handleVoteSubmit(event) {
   }
   Product.voteCount++;
 
-  if (Product.voteCount === 5){
+  if (Product.voteCount === 25){
     displayResults();
   } else {
     Product.renderProducts();
