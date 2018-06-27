@@ -15,14 +15,15 @@ var prodName3 = document.getElementById('prodName3');
 
 //Element node variables for form and table
 var productForm = document.getElementById('productSelector');
+var productChart = document.getElementById('productChart');
 var productVoteResults = document.getElementById('productVoteResults');
 
 //Arrays for charting
 var chartProductArray = [];
+var chartPercentagesArray = [];
 // var chartLikesArray = [];
 // var chartDisplaysArray = [];
-var chartPercentagesArray = [];
-
+hideChart();
 
 /********************************************************************************
 *         Product Constructor                                                   *
@@ -134,6 +135,7 @@ function handleVoteSubmit(event) {
 var displayResults = function() {
   //removes form and disables listener
   productForm.style.display = 'none';
+  productChart.style.display = 'inline';
   productForm.removeEventListener(event, handleVoteSubmit);
 
   Product.calcPercent();
@@ -197,9 +199,14 @@ var createChartArrays = function(){
   }
 };
 
+var chartColors = [
+  '#FFCCCC', '#FFEECC', '#FFDDCC', '#FFCCCC', '#FFBBCC', '#FFAACC', '#CCFFFF', '#CCEEFF', '#CCDDFF', '#CCCCFF', '#CCBBFF', '#CCAAFF', '#BFFCC6', '#DBFFD6', '#F3FFE3', '#E7FFAC', '#FFFFD1', '#FFABA1', '#D5AAFF', '#AFF8D8'
+];
+
 var data = {
   datasets: [{
-    data: chartPercentagesArray
+    data: chartPercentagesArray,
+    backgroundColor: chartColors,
   }],
 
   labels: chartProductArray
@@ -210,9 +217,14 @@ function drawChart() {
   var percentageChart = new Chart (ctx, {
     type:'doughnut',
     data: data,
-    // option: options
   });
+  drawChart = true;
+  productChart.hidden = false;
 };
+
+function hideChart () {
+  productChart.hidden = true;
+}
 
 
 
@@ -241,5 +253,3 @@ new Product('usb', './images/products/usb.gif');
 new Product('water-can', './images/products/water-can.jpg');
 new Product('wine-glass', './images/products/wine-glass.jpg');
 Product.renderProducts();
-
-
