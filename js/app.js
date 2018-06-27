@@ -25,9 +25,12 @@ var chartPercentagesArray = [];
 // var chartDisplaysArray = [];
 hideChart();
 
+//local storage utility
+var sessionSubmits = 0;
+
 /********************************************************************************
-*         Product Constructor                                                   *
-********************************************************************************/
+ *         Product Constructor                                                   *
+ ********************************************************************************/
 //Arrays for Constructor
 Product.productArray = [];
 Product.lastRoundArray = [];
@@ -38,17 +41,17 @@ Product.voteCount = 0;
 function Product(name, src){
   this.name = name;
   this.src = src;
-
+  
   this.likesCount = 0;
   this.displayCount = 0;
   this.percentageLikes = 0;
-
+  
   Product.productArray.push(this);
 };
 
 /********************************************************************************
-*         Product helper functions                                              *
-********************************************************************************/
+ *         Product helper functions                                              *
+ ********************************************************************************/
 
 //Create random number by Product array range
 Product.randomNumber = function(){
@@ -62,33 +65,33 @@ Product.chooseThreeImages = function(){
   do {
     Product.indexNumber1 = Product.randomNumber();
   } while (Product.lastRoundArray.includes(Product.indexNumber1));
-
+  
   //find second random number
   do {
     Product.indexNumber2 = Product.randomNumber();
   } while (Product.indexNumber2 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber2));
-
+  
   //find third random number
   do{
     Product.indexNumber3 = Product.randomNumber();
   } while (Product.indexNumber3 === Product.indexNumber2 || Product.indexNumber3 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber3));
-
+  
   Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber2, Product.indexNumber3];
 };
 
 //function in constructer to change image source of images on the site and adds displayCount
 Product.renderProducts = function(){
   Product.chooseThreeImages();
-
+  
   product1.src = Product.productArray[Product.indexNumber1].src;
   product2.src = Product.productArray[Product.indexNumber2].src;
   product3.src = Product.productArray[Product.indexNumber3].src;
   Product.selectedIndexArray = [Product.indexNumber1, Product.indexNumber2, Product.indexNumber3];
-
+  
   prodName1.innerText = Product.productArray[Product.indexNumber1].name;
   prodName2.innerText = Product.productArray[Product.indexNumber2].name;
   prodName3.innerText = Product.productArray[Product.indexNumber3].name;
-
+  
   Product.productArray[Product.indexNumber1].displayCount++;
   Product.productArray[Product.indexNumber2].displayCount++;
   Product.productArray[Product.indexNumber3].displayCount++;
@@ -109,7 +112,7 @@ productForm.addEventListener('submit', handleVoteSubmit);
 function handleVoteSubmit(event) {
   event.preventDefault();
   var productForm = document.getElementsByName('productVote');
-
+  
   for (var i = 0 ; i < productForm.length; i++){
     if (productForm[i].checked) {
       var selectedIndex = Product.selectedIndexArray[productForm[i].dataset.index];
@@ -117,11 +120,15 @@ function handleVoteSubmit(event) {
     }
   }
   Product.voteCount++;
-
+  sessionSubmits++;
+  console.log(sessionSubmits);
+  localStorage.setItem('sessionSubmits', sessionSubmits);
+  
   if (Product.voteCount === 25){
     displayResults();
     createChartArrays();
     drawChart();
+    sessionSubmits = 0;
   } else {
     Product.renderProducts();
   }
