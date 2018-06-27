@@ -20,10 +20,9 @@ var productVoteResults = document.getElementById('productVoteResults');
 
 //Arrays for charting
 var chartProductArray = [];
+var chartPercentagesArray = [];
 // var chartLikesArray = [];
 // var chartDisplaysArray = [];
-var chartPercentagesArray = [];
-var chartDrawn = false;
 hideChart();
 
 /********************************************************************************
@@ -254,5 +253,3 @@ new Product('usb', './images/products/usb.gif');
 new Product('water-can', './images/products/water-can.jpg');
 new Product('wine-glass', './images/products/wine-glass.jpg');
 Product.renderProducts();
-
-
