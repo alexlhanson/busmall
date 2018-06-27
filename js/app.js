@@ -21,12 +21,8 @@ var productVoteResults = document.getElementById('productVoteResults');
 //Arrays for charting
 var chartProductArray = [];
 var chartPercentagesArray = [];
-// var chartLikesArray = [];
-// var chartDisplaysArray = [];
-hideChart();
 
-//local storage utility
-var sessionSubmits = 0;
+hideChart();
 
 /********************************************************************************
  *         Product Constructor                                                   *
@@ -100,7 +96,11 @@ Product.renderProducts = function(){
 //Function in constructer to calculate percentage clicked
 Product.calcPercent = function (){
   for (var product in Product.productArray){
-    Product.productArray[product].percentageLikes = parseFloat(100 * (Product.productArray[product].likesCount / Product.productArray[product].displayCount));
+    if(Product.productArray[product].displayCount === 0){
+      Product.productArray[product].percentageLikes = 0;
+    } else {
+      Product.productArray[product].percentageLikes = parseFloat(100 * (Product.productArray[product].likesCount / Product.productArray[product].displayCount));
+    }
   }
 };
 
@@ -119,16 +119,17 @@ function handleVoteSubmit(event) {
       Product.productArray[selectedIndex].likesCount++;
     }
   }
+
   Product.voteCount++;
-  sessionSubmits++;
-  console.log(sessionSubmits);
-  localStorage.setItem('sessionSubmits', sessionSubmits);
+  localStorage.setItem('sessionVotes', JSON.stringify(Product.voteCount));
+  localStorage.setItem('productArray', JSON.stringify(Product.productArray));
   
   if (Product.voteCount === 25){
     displayResults();
     createChartArrays();
     drawChart();
-    sessionSubmits = 0;
+    Product.voteCount = 0;
+    localStorage.setItem('sessionVotes', Product.voteCount);
   } else {
     Product.renderProducts();
   }
@@ -199,10 +200,6 @@ var createChartArrays = function(){
   for (var product in Product.productArray){
     chartProductArray.push(Product.productArray[product].name);
     chartPercentagesArray.push(Product.productArray[product].percentageLikes);
-    console.log(chartPercentagesArray);
-    //future potential charting
-    // chartLikesArray.push(Product.productArray[product].likesCount);
-    // chartDisplaysArray.push(Product.productArray[product].displayCount);
   }
 };
 
@@ -239,24 +236,31 @@ function hideChart () {
  *         Add instances and call functions for running                          *
  ********************************************************************************/
 //Add Product instances
-new Product('bag', './images/products/bag.jpg');
-new Product('banana', './images/products/banana.jpg');
-new Product('bathroom', './images/products/bathroom.jpg');
-new Product('boots', './images/products/boots.jpg');
-new Product('breakfast', './images/products/breakfast.jpg');
-new Product('bubblegum', './images/products/bubblegum.jpg');
-new Product('chair', './images/products/chair.jpg');
-new Product('cthulhu', './images/products/cthulhu.jpg');
-new Product('dog-duck', './images/products/dog-duck.jpg');
-new Product('dragon', './images/products/dragon.jpg');
-new Product('pen', './images/products/pen.jpg');
-new Product('pet-sweep', './images/products/pet-sweep.jpg');
-new Product('scissors', './images/products/scissors.jpg');
-new Product('shark', './images/products/shark.jpg');
-new Product('sweep', './images/products/sweep.jpg');
-new Product('tauntaun', './images/products/tauntaun.jpg');
-new Product('unicorn', './images/products/unicorn.jpg');
-new Product('usb', './images/products/usb.gif');
-new Product('water-can', './images/products/water-can.jpg');
-new Product('wine-glass', './images/products/wine-glass.jpg');
+if(!JSON.parse(localStorage.getItem('sessionVotes'))) {
+
+  new Product('bag', './images/products/bag.jpg');
+  new Product('banana', './images/products/banana.jpg');
+  new Product('bathroom', './images/products/bathroom.jpg');
+  new Product('boots', './images/products/boots.jpg');
+  new Product('breakfast', './images/products/breakfast.jpg');
+  new Product('bubblegum', './images/products/bubblegum.jpg');
+  new Product('chair', './images/products/chair.jpg');
+  new Product('cthulhu', './images/products/cthulhu.jpg');
+  new Product('dog-duck', './images/products/dog-duck.jpg');
+  new Product('dragon', './images/products/dragon.jpg');
+  new Product('pen', './images/products/pen.jpg');
+  new Product('pet-sweep', './images/products/pet-sweep.jpg');
+  new Product('scissors', './images/products/scissors.jpg');
+  new Product('shark', './images/products/shark.jpg');
+  new Product('sweep', './images/products/sweep.jpg');
+  new Product('tauntaun', './images/products/tauntaun.jpg');
+  new Product('unicorn', './images/products/unicorn.jpg');
+  new Product('usb', './images/products/usb.gif');
+  new Product('water-can', './images/products/water-can.jpg');
+  new Product('wine-glass', './images/products/wine-glass.jpg');
+} else {
+  Product.productArray = JSON.parse(localStorage.getItem('productArray'));
+  Product.voteCount = JSON.parse(localStorage.getItem('sessionVotes'));
+}
+
 Product.renderProducts();
