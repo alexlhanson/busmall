@@ -107,12 +107,15 @@ Product.calcPercent = function (){
 /********************************************************************************
  *         Event Listeners and Handlers                                          *
  ********************************************************************************/
+//event listener for submit button
 productForm.addEventListener('submit', handleVoteSubmit);
 
+// event handler for click on submit
 function handleVoteSubmit(event) {
   event.preventDefault();
   var productForm = document.getElementsByName('productVote');
-  
+ 
+  //Gives a like to product array selected
   for (var i = 0 ; i < productForm.length; i++){
     if (productForm[i].checked) {
       var selectedIndex = Product.selectedIndexArray[productForm[i].dataset.index];
@@ -120,10 +123,12 @@ function handleVoteSubmit(event) {
     }
   }
 
+  //iterates vote count and sets productarray and votes to local storage
   Product.voteCount++;
   localStorage.setItem('sessionVotes', JSON.stringify(Product.voteCount));
   localStorage.setItem('productArray', JSON.stringify(Product.productArray));
   
+  //Call cuntions for when we get to 25 votes
   if (Product.voteCount === 25){
     displayResults();
     createChartArrays();
@@ -146,35 +151,41 @@ var displayResults = function() {
   productChart.style.display = 'inline';
   productForm.removeEventListener(event, handleVoteSubmit);
 
+  //Calculates percentages and generates table
   Product.calcPercent();
-
   createHeaderRow();
-
-  var trEl = document.createElement('tr');
-  var thEl = document.createElement('th');
-  var tdEl = document.createElement('td');
-
-  for (var i = 0; i < Product.productArray.length; i++){
-    trEl = document.createElement('tr');
-
-    thEl = document.createElement('th');
-    thEl.textContent = Product.productArray[i].name;
-    trEl.appendChild(thEl);
-
-    tdEl = document.createElement('td');
-    tdEl.textContent = Product.productArray[i].likesCount;
-    trEl.appendChild(tdEl);
-
-    tdEl = document.createElement('td');
-    tdEl.textContent = Product.productArray[i].displayCount;
-    trEl.appendChild(tdEl);
-
-    productVoteResults.appendChild(trEl);
-  }
+  createTableRows();
 
   productVoteResults.style.display = 'inline';
 };
 
+// Creates the main table rows for product data
+var createTableRows = function() {
+  var trEl = document.createElement('tr');
+  var thEl = document.createElement('th');
+  var tdEl = document.createElement('td');
+ 
+  //creates rows of data from productArray in table
+  for (var i = 0; i < Product.productArray.length; i++){
+    trEl = document.createElement('tr');
+  
+    thEl = document.createElement('th');
+    thEl.textContent = Product.productArray[i].name;
+    trEl.appendChild(thEl);
+  
+    tdEl = document.createElement('td');
+    tdEl.textContent = Product.productArray[i].likesCount;
+    trEl.appendChild(tdEl);
+  
+    tdEl = document.createElement('td');
+    tdEl.textContent = Product.productArray[i].displayCount;
+    trEl.appendChild(tdEl);
+  
+    productVoteResults.appendChild(trEl);
+  }
+};
+
+//Creates header row for table
 var createHeaderRow = function(){
   var trEl = document.createElement('tr');
 
@@ -196,6 +207,7 @@ var createHeaderRow = function(){
 /********************************************************************************
 *         Charting                                                              *
 ********************************************************************************/
+//function creates arrays for use in chart data
 var createChartArrays = function(){
   for (var product in Product.productArray){
     chartProductArray.push(Product.productArray[product].name);
@@ -203,10 +215,12 @@ var createChartArrays = function(){
   }
 };
 
+//colors array for chartjs selection - pastels
 var chartColors = [
   '#FFCCCC', '#FFEECC', '#FFDDCC', '#FFCCCC', '#FFBBCC', '#FFAACC', '#CCFFFF', '#CCEEFF', '#CCDDFF', '#CCCCFF', '#CCBBFF', '#CCAAFF', '#BFFCC6', '#DBFFD6', '#F3FFE3', '#E7FFAC', '#FFFFD1', '#FFABA1', '#D5AAFF', '#AFF8D8'
 ];
 
+//Creates dataset object for chartjs
 var data = {
   datasets: [{
     data: chartPercentagesArray,
@@ -216,6 +230,7 @@ var data = {
   labels: chartProductArray
 };
 
+// Creates function to get node for chart and create chart object
 function drawChart() {
   var ctx = document.getElementById('productChart').getContext('2d');
   var percentageChart = new Chart (ctx, {
@@ -226,6 +241,7 @@ function drawChart() {
   productChart.hidden = false;
 };
 
+//function to hide chart until data is generated
 function hideChart () {
   productChart.hidden = true;
 }
@@ -263,4 +279,5 @@ if(!JSON.parse(localStorage.getItem('sessionVotes'))) {
   Product.voteCount = JSON.parse(localStorage.getItem('sessionVotes'));
 }
 
+//default call to render products at browser open
 Product.renderProducts();
