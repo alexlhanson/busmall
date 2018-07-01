@@ -18,10 +18,6 @@ var productForm = document.getElementById('productSelector');
 var productChart = document.getElementById('productChart');
 var productVoteResults = document.getElementById('productVoteResults');
 
-//Arrays for charting
-var chartProductArray = [];
-var chartPercentagesArray = [];
-
 hideChart();
 
 /********************************************************************************
@@ -34,14 +30,14 @@ Product.selectedIndexArray = [];
 Product.voteCount = 0;
 
 //constructor for Product objects
-function Product(name, src){
+function Product(name, src) {
   this.name = name;
   this.src = src;
-  
+
   this.likesCount = 0;
   this.displayCount = 0;
   this.percentageLikes = 0;
-  
+
   Product.productArray.push(this);
 };
 
@@ -50,53 +46,53 @@ function Product(name, src){
  ********************************************************************************/
 
 //Create random number by Product array range
-Product.randomNumber = function(){
+Product.randomNumber = function () {
   var randomNumber = Math.floor(Math.random() * this.productArray.length);
   return randomNumber;
 };
 
 //Chooses three random numbers for selecting images
-Product.chooseThreeImages = function(){
+Product.chooseThreeImages = function () {
   //find first random number
   do {
     Product.indexNumber1 = Product.randomNumber();
   } while (Product.lastRoundArray.includes(Product.indexNumber1));
-  
+
   //find second random number
   do {
     Product.indexNumber2 = Product.randomNumber();
   } while (Product.indexNumber2 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber2));
-  
+
   //find third random number
-  do{
+  do {
     Product.indexNumber3 = Product.randomNumber();
   } while (Product.indexNumber3 === Product.indexNumber2 || Product.indexNumber3 === Product.indexNumber1 || Product.lastRoundArray.includes(Product.indexNumber3));
-  
+
   Product.lastRoundArray = [Product.indexNumber1, Product.indexNumber2, Product.indexNumber3];
 };
 
 //function in constructer to change image source of images on the site and adds displayCount
-Product.renderProducts = function(){
+Product.renderProducts = function () {
   Product.chooseThreeImages();
-  
+
   product1.src = Product.productArray[Product.indexNumber1].src;
   product2.src = Product.productArray[Product.indexNumber2].src;
   product3.src = Product.productArray[Product.indexNumber3].src;
   Product.selectedIndexArray = [Product.indexNumber1, Product.indexNumber2, Product.indexNumber3];
-  
+
   prodName1.innerText = Product.productArray[Product.indexNumber1].name;
   prodName2.innerText = Product.productArray[Product.indexNumber2].name;
   prodName3.innerText = Product.productArray[Product.indexNumber3].name;
-  
+
   Product.productArray[Product.indexNumber1].displayCount++;
   Product.productArray[Product.indexNumber2].displayCount++;
   Product.productArray[Product.indexNumber3].displayCount++;
 };
 
 //Function in constructer to calculate percentage clicked
-Product.calcPercent = function (){
-  for (var product in Product.productArray){
-    if(Product.productArray[product].displayCount === 0){
+Product.calcPercent = function () {
+  for (var product in Product.productArray) {
+    if (Product.productArray[product].displayCount === 0) {
       Product.productArray[product].percentageLikes = 0;
     } else {
       Product.productArray[product].percentageLikes = parseFloat(100 * (Product.productArray[product].likesCount / Product.productArray[product].displayCount));
@@ -107,24 +103,29 @@ Product.calcPercent = function (){
 /********************************************************************************
  *         Event Listeners and Handlers                                          *
  ********************************************************************************/
+//event listener for submit button
 productForm.addEventListener('submit', handleVoteSubmit);
 
+// event handler for click on submit
 function handleVoteSubmit(event) {
   event.preventDefault();
   var productForm = document.getElementsByName('productVote');
-  
-  for (var i = 0 ; i < productForm.length; i++){
+
+  //Gives a like to product array selected
+  for (var i = 0; i < productForm.length; i++) {
     if (productForm[i].checked) {
       var selectedIndex = Product.selectedIndexArray[productForm[i].dataset.index];
       Product.productArray[selectedIndex].likesCount++;
     }
   }
 
+  //iterates vote count and sets productarray and votes to local storage
   Product.voteCount++;
   localStorage.setItem('sessionVotes', JSON.stringify(Product.voteCount));
   localStorage.setItem('productArray', JSON.stringify(Product.productArray));
-  
-  if (Product.voteCount === 25){
+
+  //Call cuntions for when we get to 25 votes
+  if (Product.voteCount === 25) {
     displayResults();
     createChartArrays();
     drawChart();
@@ -140,21 +141,28 @@ function handleVoteSubmit(event) {
  ********************************************************************************/
 
 //Removes voting and displays results
-var displayResults = function() {
+var displayResults = function () {
   //removes form and disables listener
   productForm.style.display = 'none';
   productChart.style.display = 'inline';
   productForm.removeEventListener(event, handleVoteSubmit);
 
+  //Calculates percentages and generates table
   Product.calcPercent();
-
   createHeaderRow();
+  createTableRows();
 
+  productVoteResults.style.display = 'inline';
+};
+
+// Creates the main table rows for product data
+var createTableRows = function () {
   var trEl = document.createElement('tr');
   var thEl = document.createElement('th');
   var tdEl = document.createElement('td');
 
-  for (var i = 0; i < Product.productArray.length; i++){
+  //creates rows of data from productArray in table
+  for (var i = 0; i < Product.productArray.length; i++) {
     trEl = document.createElement('tr');
 
     thEl = document.createElement('th');
@@ -171,11 +179,10 @@ var displayResults = function() {
 
     productVoteResults.appendChild(trEl);
   }
-
-  productVoteResults.style.display = 'inline';
 };
 
-var createHeaderRow = function(){
+//Creates header row for table
+var createHeaderRow = function () {
   var trEl = document.createElement('tr');
 
   var thEl = document.createElement('th');
@@ -194,49 +201,10 @@ var createHeaderRow = function(){
 };
 
 /********************************************************************************
-*         Charting                                                              *
-********************************************************************************/
-var createChartArrays = function(){
-  for (var product in Product.productArray){
-    chartProductArray.push(Product.productArray[product].name);
-    chartPercentagesArray.push(Product.productArray[product].percentageLikes);
-  }
-};
-
-var chartColors = [
-  '#FFCCCC', '#FFEECC', '#FFDDCC', '#FFCCCC', '#FFBBCC', '#FFAACC', '#CCFFFF', '#CCEEFF', '#CCDDFF', '#CCCCFF', '#CCBBFF', '#CCAAFF', '#BFFCC6', '#DBFFD6', '#F3FFE3', '#E7FFAC', '#FFFFD1', '#FFABA1', '#D5AAFF', '#AFF8D8'
-];
-
-var data = {
-  datasets: [{
-    data: chartPercentagesArray,
-    backgroundColor: chartColors,
-  }],
-
-  labels: chartProductArray
-};
-
-function drawChart() {
-  var ctx = document.getElementById('productChart').getContext('2d');
-  var percentageChart = new Chart (ctx, {
-    type:'doughnut',
-    data: data,
-  });
-  drawChart = true;
-  productChart.hidden = false;
-};
-
-function hideChart () {
-  productChart.hidden = true;
-}
-
-
-
-/********************************************************************************
  *         Add instances and call functions for running                          *
  ********************************************************************************/
-//Add Product instances
-if(!JSON.parse(localStorage.getItem('sessionVotes'))) {
+//Add Product instances or Pull products and voteCount from local storage
+if (!JSON.parse(localStorage.getItem('sessionVotes'))) {
 
   new Product('bag', './images/products/bag.jpg');
   new Product('banana', './images/products/banana.jpg');
@@ -263,4 +231,5 @@ if(!JSON.parse(localStorage.getItem('sessionVotes'))) {
   Product.voteCount = JSON.parse(localStorage.getItem('sessionVotes'));
 }
 
+//default call to render products at browser open
 Product.renderProducts();
